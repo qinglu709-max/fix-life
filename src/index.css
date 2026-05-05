@@ -1,0 +1,66 @@
+@import "tailwindcss";
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background-color: #F5EFE6;
+  color: #3D2B1F;
+  font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100svh;
+}
+
+#root {
+  max-width: 480px;
+  margin: 0 auto;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Animations ─────────────────────────────────────────────── */
+
+@keyframes slideInDown {
+  from { opacity: 0; transform: translateY(-12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.card-enter { animation: slideInDown 0.3s ease forwards; }
+
+@keyframes slideOutLeft {
+  to { opacity: 0; transform: translateX(-110%); }
+}
+.card-exit { animation: slideOutLeft 0.25s ease forwards; }
+
+@keyframes burst {
+  0%   { transform: translate(0,0) scale(1); opacity: 1; }
+  100% { transform: translate(var(--tx), var(--ty)) scale(0); opacity: 0; }
+}
+.star { animation: burst 0.8s ease-out forwards; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.fade-in { animation: fadeIn 0.35s ease forwards; }
+
+@keyframes sheetUp {
+  from { transform: translateY(100%); }
+  to   { transform: translateY(0); }
+}
+.sheet-enter { animation: sheetUp 0.3s ease forwards; }
+
+@media (prefers-reduced-motion: reduce) {
+  .star, .card-enter, .card-exit, .fade-in, .sheet-enter {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+/* ── Swipe delete ───────────────────────────────────────────── */
+.swipe-container { overflow: hidden; position: relative; }
+.swipe-content   { transition: transform 0.2s ease; }
+.delete-btn-wrap {
+  position: absolute; right: 0; top: 0; bottom: 0;
+  display: flex; align-items: center;
+}
