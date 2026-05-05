@@ -152,7 +152,6 @@ function BottomNav({ active, setActive, pendingCount }) {
 function TodayPage({ pending, onFixed }) {
   const [picked, setPicked] = useState(null);
   const [showDone, setShowDone] = useState(false);
-  const [solution, setSolution] = useState("");
   const [actualMoney, setActualMoney] = useState("");
   const [actualTime, setActualTime] = useState("");
   const [celebrating, setCelebrating] = useState(null);
@@ -166,14 +165,14 @@ function TodayPage({ pending, onFixed }) {
     const src = pool.length > 0 ? pool : pending;
     setPicked(src[Math.floor(Math.random() * src.length)]);
     setShowDone(false);
-    setSolution(""); setActualMoney(""); setActualTime("");
+    setActualMoney(""); setActualTime("");
   }
 
   function handleFixed() {
     if (!picked) return;
     const result = {
       ...picked,
-      solution: solution || "Sorted it out",
+      solution: picked.solution || "Sorted it out",
       money: Number(actualMoney) || picked.money,
       time: Number(actualTime) || picked.time,
       ago: "Just now",
@@ -298,17 +297,6 @@ function TodayPage({ pending, onFixed }) {
               <div style={{ fontSize: 15, fontWeight: 600, color: C.text, marginBottom: 16 }}>
                 How did you fix it?
               </div>
-              <textarea
-                placeholder="Briefly describe your solution (optional)"
-                value={solution}
-                onChange={e => setSolution(e.target.value)}
-                style={{
-                  width: "100%", background: C.bg, border: `1px solid ${C.border}`,
-                  borderRadius: 14, padding: "12px 14px", fontSize: 13,
-                  color: C.text, resize: "none", height: 80,
-                  outline: "none", fontFamily: "inherit", marginBottom: 12,
-                }}
-              />
               <div style={{ display: "flex", gap: 10, marginBottom: 16 }}>
                 <div style={{ flex: 1 }}>
                   <div style={{ fontSize: 11, color: C.textSub, marginBottom: 5 }}>Actual cost ($)</div>
@@ -349,11 +337,12 @@ function PendingPage({ items, onAdd, onDelete }) {
   const [title, setTitle] = useState("");
   const [money, setMoney] = useState("");
   const [time, setTime] = useState("");
+  const [solutionIdea, setSolutionIdea] = useState("");
 
   function handleAdd() {
     if (!title.trim()) return;
-    onAdd({ id: Date.now(), title, money: Number(money) || 0, time: Number(time) || 0 });
-    setTitle(""); setMoney(""); setTime("");
+    onAdd({ id: Date.now(), title, money: Number(money) || 0, time: Number(time) || 0, solution: solutionIdea });
+    setTitle(""); setMoney(""); setTime(""); setSolutionIdea("");
     setShowAdd(false);
   }
 
@@ -494,6 +483,21 @@ function PendingPage({ items, onAdd, onDelete }) {
                   }}>{label}</button>
                 ))}
               </div>
+            </div>
+
+            <div style={{ marginBottom: 20 }}>
+              <div style={{ fontSize: 11, color: C.textSub, marginBottom: 5 }}>Solution idea (optional)</div>
+              <textarea
+                placeholder="Any idea how to fix it?"
+                value={solutionIdea}
+                onChange={e => setSolutionIdea(e.target.value)}
+                style={{
+                  width: "100%", background: C.card, border: `1px solid ${C.border}`,
+                  borderRadius: 14, padding: "12px 14px", fontSize: 13,
+                  color: C.text, resize: "none", height: 60,
+                  outline: "none", fontFamily: "inherit",
+                }}
+              />
             </div>
 
             <PrimaryBtn onClick={handleAdd} disabled={!title.trim()}>Done</PrimaryBtn>
