@@ -1,5 +1,25 @@
 import { useState } from "react";
 
+function useLocalStorage(key, initialValue) {
+  const [value, setValue] = useState(() => {
+    try {
+      const stored = localStorage.getItem(key);
+      return stored ? JSON.parse(stored) : initialValue;
+    } catch {
+      return initialValue;
+    }
+  });
+
+  function setAndStore(newVal) {
+    setValue(newVal);
+    try {
+      localStorage.setItem(key, JSON.stringify(newVal));
+    } catch {}
+  }
+
+  return [value, setAndStore];
+}
+
 // ─── Color tokens ───────────────────────────────────────────────
 const C = {
   bg: "#FFF8F4",
@@ -668,8 +688,8 @@ function SettingsPage() {
 // ─── Root App ────────────────────────────────────────────────────
 export default function FixLife() {
   const [tab, setTab] = useState("today");
-  const [pending, setPending] = useState(INIT_PENDING);
-  const [fixed, setFixed] = useState(INIT_FIXED);
+  const [pending, setPending] = useLocalStorage('fixlife_pending', INIT_PENDING);
+  const [fixed, setFixed] = useLocalStorage('fixlife_fixed', INIT_FIXED);
 
   function handleAdd(item) {
     setPending(prev => [item, ...prev]);
