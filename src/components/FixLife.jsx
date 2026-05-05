@@ -14,6 +14,7 @@ function useLocalStorage(key, initialValue) {
     setValue(newVal);
     try {
       localStorage.setItem(key, JSON.stringify(newVal));
+      console.log('localStorage pending:', localStorage.getItem('fixlife_pending'));
     } catch {}
   }
 
@@ -38,19 +39,8 @@ const C = {
 };
 
 // ─── Sample data ─────────────────────────────────────────────────
-const INIT_PENDING = [
-  { id: 1, title: "Can never find my keys, waste 5 min every morning", money: 20, time: 30 },
-  { id: 2, title: "Bathroom light too dim, can't see well when getting ready", money: 40, time: 60 },
-  { id: 3, title: "Charging cable too short, have to hunch over to charge", money: 15, time: 10 },
-  { id: 4, title: "Never know what to eat for lunch, spend too long deciding", money: 0, time: 20 },
-  { id: 5, title: "Desk cables are a mess, stresses me out every day", money: 25, time: 45 },
-];
-
-const INIT_FIXED = [
-  { id: 10, title: "Charging cable too short", solution: "Bought a 2m cable", money: 12, time: 5, ago: "3 days ago" },
-  { id: 11, title: "Couldn't find important files", solution: "Created folder system", money: 0, time: 20, ago: "1 week ago" },
-  { id: 12, title: "Always losing track of socks", solution: "Got a drawer organizer", money: 18, time: 10, ago: "2 weeks ago" },
-];
+const INIT_PENDING = [];
+const INIT_FIXED = [];
 
 // ─── Helpers ─────────────────────────────────────────────────────
 function fmtTime(min) {
