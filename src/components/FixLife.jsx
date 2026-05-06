@@ -14,8 +14,9 @@ function useLocalStorage(key, initialValue) {
     setValue(newVal);
     try {
       localStorage.setItem(key, JSON.stringify(newVal));
-      console.log('localStorage pending:', localStorage.getItem('fixlife_pending'));
-    } catch {}
+    } catch (e) {
+      console.error('localStorage error:', e);
+    }
   }
 
   return [value, setAndStore];
@@ -37,10 +38,6 @@ const C = {
   green: { bg: "#EAFAF2", color: "#1A7A4A" },
   yellow: "#FFBE0B",
 };
-
-// ─── Sample data ─────────────────────────────────────────────────
-const INIT_PENDING = [];
-const INIT_FIXED = [];
 
 // ─── Helpers ─────────────────────────────────────────────────────
 function fmtTime(min) {
@@ -694,8 +691,8 @@ function SettingsPage() {
 // ─── Root App ────────────────────────────────────────────────────
 export default function FixLife() {
   const [tab, setTab] = useState("today");
-  const [pending, setPending] = useLocalStorage('fixlife_pending', INIT_PENDING);
-  const [fixed, setFixed] = useLocalStorage('fixlife_fixed', INIT_FIXED);
+  const [pending, setPending] = useLocalStorage('fixlife_pending', []);
+  const [fixed, setFixed] = useLocalStorage('fixlife_fixed', []);
 
   function handleAdd(item) {
     setPending(prev => [item, ...prev]);
