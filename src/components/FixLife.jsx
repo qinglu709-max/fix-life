@@ -1,26 +1,5 @@
 import { useState } from "react";
 
-function useLocalStorage(key, initialValue) {
-  const [value, setValue] = useState(() => {
-    try {
-      const stored = localStorage.getItem(key);
-      return stored ? JSON.parse(stored) : initialValue;
-    } catch {
-      return initialValue;
-    }
-  });
-
-  function setAndStore(newVal) {
-    setValue(newVal);
-    try {
-      localStorage.setItem(key, JSON.stringify(newVal));
-    } catch (e) {
-      console.error('localStorage error:', e);
-    }
-  }
-
-  return [value, setAndStore];
-}
 
 // ─── Color tokens ───────────────────────────────────────────────
 const C = {
@@ -691,18 +670,39 @@ function SettingsPage() {
 // ─── Root App ────────────────────────────────────────────────────
 export default function FixLife() {
   const [tab, setTab] = useState("today");
-  const [pending, setPending] = useLocalStorage('fixlife_pending', []);
-  const [fixed, setFixed] = useLocalStorage('fixlife_fixed', []);
+  const [pending, setPending] = useState(() => {
+    try {
+      const stored = localStorage.getItem('fixlife_pending');
+      if (stored) return JSON.parse(stored);
+    } catch {}
+    return [];
+  });
+
+  const [fixed, setFixed] = useState(() => {
+    try {
+      const stored = localStorage.getItem('fixlife_fixed');
+      if (stored) return JSON.parse(stored);
+    } catch {}
+    return [];
+  });
 
   function handleAdd(item) {
-    setPending(prev => [item, ...prev]);
+    const next = [item, ...pending];
+    setPending(next);
+    localStorage.setItem('fixlife_pending', JSON.stringify(next));
   }
   function handleDelete(id) {
-    setPending(prev => prev.filter(i => i.id !== id));
+    const next = pending.filter(i => i.id !== id);
+    setPending(next);
+    localStorage.setItem('fixlife_pending', JSON.stringify(next));
   }
   function handleFixed(id, result) {
-    setPending(prev => prev.filter(i => i.id !== id));
-    setFixed(prev => [result, ...prev]);
+    const nextPending = pending.filter(i => i.id !== id);
+    const nextFixed = [result, ...fixed];
+    setPending(nextPending);
+    setFixed(nextFixed);
+    localStorage.setItem('fixlife_pending', JSON.stringify(nextPending));
+    localStorage.setItem('fixlife_fixed', JSON.stringify(nextFixed));
   }
 
   return (
